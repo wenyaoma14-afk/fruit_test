@@ -3,191 +3,322 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>宝宝点水果（英文语音）</title>
+  <title>Fruit Tap</title>
   <style>
     :root{
       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,"PingFang SC","Microsoft YaHei",sans-serif;
+      --card: rgba(255,255,255,.88);
+      --shadow: 0 18px 45px rgba(0,0,0,.15);
+      --r: 22px;
     }
-    body{margin:0;background:#f6f7fb;}
-    .app{max-width:520px;margin:0 auto;padding:14px;}
-    .card{background:#fff;border-radius:18px;padding:16px;box-shadow:0 10px 24px rgba(0,0,0,.08);}
-    .top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
-    .title{font-size:18px;font-weight:900;margin:0;}
-    .badge{background:#eef2ff;color:#3730a3;padding:6px 10px;border-radius:999px;font-size:13px;}
-    .row{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:12px;flex-wrap:wrap;}
-    .btn{border:0;border-radius:14px;padding:10px 12px;background:#111;color:#fff;font-size:14px;cursor:pointer;}
-    .btn:active{transform:scale(.98);}
-    .hint{font-size:13px;color:#555;}
-    .big{font-size:20px;font-weight:900;}
+    *{box-sizing:border-box;}
+    body{
+      margin:0;
+      min-height:100vh;
+      background: radial-gradient(1100px 700px at 20% 15%, #ffef9a 0%, rgba(255,239,154,0) 55%),
+                  radial-gradient(1000px 700px at 85% 10%, #a9f2ff 0%, rgba(169,242,255,0) 55%),
+                  radial-gradient(900px 700px at 20% 85%, #ffc1f0 0%, rgba(255,193,240,0) 55%),
+                  linear-gradient(135deg, #7c3aed 0%, #2563eb 35%, #22c55e 100%);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:14px;
+    }
 
-    .grid{margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-    .pic{
-      border:0;border-radius:18px;padding:16px 12px;background:#fff;
-      box-shadow:0 8px 18px rgba(0,0,0,.06);
-      cursor:pointer;user-select:none;
-      display:flex;align-items:center;justify-content:center;
-      min-height:120px;
-      transition: transform .06s ease;
+    .shell{
+      width:min(560px, 100%);
       position:relative;
     }
-    .pic:active{transform:scale(.98);}
-    .emoji{font-size:68px;line-height:1;}
-    .pic.correct{outline:4px solid #22c55e;}
-    .pic.wrong{outline:4px solid #ef4444;}
 
-    .result{
-      margin-top:14px;min-height:130px;border-radius:18px;
-      background:#f3f4f6;display:grid;place-items:center;
-      position:relative;overflow:hidden;
+    .header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:12px;
+      color:#fff;
     }
-    .msg{font-size:20px;font-weight:900;text-align:center;}
-    .sub{margin-top:6px;font-size:14px;opacity:.75;text-align:center;}
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .logo{
+      width:42px;height:42px;border-radius:14px;
+      background: rgba(255,255,255,.18);
+      border:1px solid rgba(255,255,255,.35);
+      display:grid;place-items:center;
+      box-shadow: 0 12px 24px rgba(0,0,0,.18);
+      backdrop-filter: blur(8px);
+      font-size:22px;
+    }
+    .title{
+      font-weight:900;
+      font-size:18px;
+      line-height:1.1;
+    }
+    .subtitle{
+      opacity:.9;
+      font-size:12px;
+      margin-top:2px;
+    }
+    .score{
+      background: rgba(255,255,255,.2);
+      border:1px solid rgba(255,255,255,.35);
+      border-radius:999px;
+      padding:8px 12px;
+      font-weight:900;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 12px 24px rgba(0,0,0,.15);
+    }
 
-    /* 成功：小兔子跳舞 */
-    .bunnyWrap{
-      position:absolute;inset:0;display:none;
-      align-items:center;justify-content:center;flex-direction:column;
-      gap:8px;
-      background: rgba(255,255,255,.55);
-      backdrop-filter: blur(2px);
+    .card{
+      background: var(--card);
+      border:1px solid rgba(255,255,255,.65);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      overflow:hidden;
+    }
+
+    .topbar{
+      padding:14px 14px 10px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+
+    .promptPill{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      background: rgba(0,0,0,.06);
+      border-radius: 999px;
+      padding:10px 12px;
+      flex:1;
+      min-width: 0;
+    }
+    .promptIcon{
+      width:36px;height:36px;border-radius:14px;
+      display:grid;place-items:center;
+      background: rgba(255,255,255,.85);
+      box-shadow: 0 10px 18px rgba(0,0,0,.10);
+      font-size:18px;
+    }
+    .promptText{
+      font-weight:900;
+      font-size:16px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .hint{
+      font-size:11px;
+      opacity:.75;
+      margin-top:2px;
+    }
+    .promptWrap{min-width:0;}
+
+    /* 图标按钮：小朋友不识字 */
+    .actions{
+      display:flex;
+      gap:10px;
+    }
+    .iconBtn{
+      width:52px;height:52px;
+      border:0;
+      border-radius:18px;
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 12px 22px rgba(0,0,0,.12);
+      cursor:pointer;
+      display:grid;place-items:center;
+      font-size:22px;
+      user-select:none;
+    }
+    .iconBtn:active{ transform: scale(.98); }
+    .iconBtn[disabled]{ opacity:.6; cursor:not-allowed; }
+
+    .grid{
+      padding: 0 14px 14px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    .tile{
+      border:0;
+      border-radius: 22px;
+      background: rgba(255,255,255,.95);
+      box-shadow: 0 14px 26px rgba(0,0,0,.12);
+      min-height: 140px;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+      overflow:hidden;
+      user-select:none;
+      transition: transform .08s ease;
+    }
+    .tile:active{ transform: scale(.98); }
+    .tile img{
+      width:92px;height:92px;
+      object-fit:contain;
+      pointer-events:none;
+      filter: drop-shadow(0 10px 12px rgba(0,0,0,.12));
+    }
+    .tile.correct{ outline: 4px solid #22c55e; }
+    .tile.wrong{ outline: 4px solid #ef4444; }
+
+    /* 成功：在水果界面上层弹出 */
+    .overlay{
+      position:absolute;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      background: rgba(0,0,0,.18);
+      backdrop-filter: blur(3px);
+      z-index: 10;
+    }
+    .popup{
+      width:min(360px, 86%);
+      background: rgba(255,255,255,.92);
+      border:1px solid rgba(255,255,255,.75);
+      border-radius: 26px;
+      box-shadow: 0 28px 60px rgba(0,0,0,.25);
+      padding: 18px 18px 16px;
+      text-align:center;
+      position:relative;
+      overflow:hidden;
+    }
+    .good{
+      font-size: 46px;
+      font-weight: 1000;
+      letter-spacing: 2px;
+      color: #111;
     }
     .bunny{
-      font-size:74px;
-      animation: bunnyDance 650ms ease-in-out infinite;
+      font-size: 74px;
+      margin: 6px 0 2px;
+      animation: dance 620ms ease-in-out infinite;
       transform-origin: 50% 80%;
-      filter: drop-shadow(0 8px 10px rgba(0,0,0,.12));
+      filter: drop-shadow(0 10px 14px rgba(0,0,0,.18));
     }
-    @keyframes bunnyDance{
-      0%   { transform: translateY(6px) rotate(-8deg) scale(1.0); }
-      25%  { transform: translateY(-8px) rotate(8deg) scale(1.06); }
-      50%  { transform: translateY(6px) rotate(-8deg) scale(1.0); }
-      75%  { transform: translateY(-8px) rotate(8deg) scale(1.06); }
-      100% { transform: translateY(6px) rotate(-8deg) scale(1.0); }
+    @keyframes dance{
+      0%{ transform: translateY(8px) rotate(-7deg) scale(1.0); }
+      25%{ transform: translateY(-10px) rotate(7deg) scale(1.06); }
+      50%{ transform: translateY(8px) rotate(-7deg) scale(1.0); }
+      75%{ transform: translateY(-10px) rotate(7deg) scale(1.06); }
+      100%{ transform: translateY(8px) rotate(-7deg) scale(1.0); }
     }
 
-    /* 彩纸（轻量） */
+    /* 彩纸 */
     .confetti{
-      position:absolute;width:12px;height:12px;border-radius:4px;
-      opacity:0;animation: fly 900ms ease-out forwards;
+      position:absolute;
+      width:12px;height:12px;border-radius:4px;
+      opacity:0;
+      animation: fly 900ms ease-out forwards;
     }
     @keyframes fly{
-      0%{transform:translate(var(--x0),20px) scale(.6) rotate(0deg);opacity:0;}
-      20%{opacity:1;}
-      100%{transform:translate(var(--x1),-150px) scale(1.1) rotate(180deg);opacity:0;}
+      0%{ transform:translate(var(--x0), 30px) scale(.7) rotate(0deg); opacity:0; }
+      25%{ opacity:1; }
+      100%{ transform:translate(var(--x1), -170px) scale(1.1) rotate(180deg); opacity:0; }
     }
 
-    /* 错误抖动 */
-    .shake{animation:shake 420ms ease-in-out;}
+    /* 错误：轻微抖动 */
+    .shake{ animation: shake 420ms ease-in-out; }
     @keyframes shake{
-      0%,100%{transform:translateX(0);}
-      25%{transform:translateX(-8px);}
-      50%{transform:translateX(8px);}
-      75%{transform:translateX(-6px);}
+      0%,100%{ transform: translateX(0); }
+      25%{ transform: translateX(-8px); }
+      50%{ transform: translateX(8px); }
+      75%{ transform: translateX(-6px); }
     }
 
-    /* 让按钮更适合小朋友：更大一点 */
-    @media (max-width: 420px){
-      .emoji{font-size:72px;}
-      .pic{min-height:130px;}
+    .footerTip{
+      padding: 0 14px 14px;
+      font-size: 11px;
+      opacity: .65;
     }
   </style>
 </head>
 <body>
-  <div class="app">
-    <div class="card">
-      <div class="top">
-        <h1 class="title">点水果（系统读英文）</h1>
-        <div class="badge">得分：<span id="score">0</span></div>
-      </div>
-
-      <div class="row">
+  <div class="shell">
+    <div class="header">
+      <div class="brand">
+        <div class="logo">🍓</div>
         <div>
-          <div class="hint">系统会读：英文单词（第一次请点“开始”解锁语音）</div>
-          <div class="big" id="promptText">点「开始」后听英文，点对应水果图片</div>
+          <div class="title">Fruit Tap</div>
+          <div class="subtitle">听英文 → 点图片</div>
         </div>
-        <div style="display:flex; gap:10px;">
-          <button class="btn" id="startBtn">开始</button>
-          <button class="btn" id="repeatBtn">再读一遍</button>
-          <button class="btn" id="nextBtn">换一题</button>
+      </div>
+      <div class="score">⭐ <span id="score">0</span></div>
+    </div>
+
+    <div class="card" id="card">
+      <div class="topbar">
+        <div class="promptPill">
+          <div class="promptIcon">🔊</div>
+          <div class="promptWrap">
+            <div class="promptText" id="promptText">Tap ▶️ to start</div>
+            <div class="hint">第一次需要点 ▶️ 解锁语音（iOS 18.5）</div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <!-- 图标按钮：开始 / 再读 / 换题 -->
+          <button class="iconBtn" id="startBtn" aria-label="start">▶️</button>
+          <button class="iconBtn" id="repeatBtn" aria-label="repeat">🔁</button>
+          <button class="iconBtn" id="nextBtn" aria-label="next">🎲</button>
         </div>
       </div>
 
       <div class="grid" id="grid"></div>
 
-      <div class="result" id="resultBox" aria-live="polite">
-        <div style="text-align:center; padding:10px;">
-          <div class="msg" id="resultMsg">🙂</div>
-          <div class="sub" id="resultSub">准备好了吗？</div>
-        </div>
+      <div class="footerTip">提示：宝宝不需要看字，只要听英文点图片。</div>
 
-        <div class="bunnyWrap" id="bunnyWrap">
+      <!-- ✅ 成功弹出层 -->
+      <div class="overlay" id="overlay">
+        <div class="popup" id="popup">
+          <div class="good">GOOD</div>
           <div class="bunny">🐰</div>
-          <div class="msg">成功！Good job!</div>
         </div>
       </div>
     </div>
   </div>
 
 <script>
-  // ✅ 10个常用水果（用emoji当图片，后面你要换真实图片也很容易）
+  // ✅ 10个水果（你已经上传真实图片的话，用 img/xxx.png；否则先用 emoji 也能跑）
+  // 如果你已做“优化1”的图片上传，就保持 img/xxx.png
   const BANK = [
-    { en:"apple",      pic:"🍎" },
-    { en:"banana",     pic:"🍌" },
-    { en:"orange",     pic:"🍊" },
-    { en:"grape",      pic:"🍇" },
-    { en:"strawberry", pic:"🍓" },
-    { en:"watermelon", pic:"🍉" },
-    { en:"pear",       pic:"🍐" },
-    { en:"peach",      pic:"🍑" },
-    { en:"mango",      pic:"🥭" },
-    { en:"pineapple",  pic:"🍍" },
+    { en:"apple",      pic:"img/apple.png",      fallback:"🍎" },
+    { en:"banana",     pic:"img/banana.png",     fallback:"🍌" },
+    { en:"orange",     pic:"img/orange.png",     fallback:"🍊" },
+    { en:"grape",      pic:"img/grape.png",      fallback:"🍇" },
+    { en:"strawberry", pic:"img/strawberry.png", fallback:"🍓" },
+    { en:"watermelon", pic:"img/watermelon.png", fallback:"🍉" },
+    { en:"pear",       pic:"img/pear.png",       fallback:"🍐" },
+    { en:"peach",      pic:"img/peach.png",      fallback:"🍑" },
+    { en:"mango",      pic:"img/mango.png",      fallback:"🥭" },
+    { en:"pineapple",  pic:"img/pineapple.png",  fallback:"🍍" },
   ];
 
   let score = 0;
   let current = null;
   let locked = false;
   let voiceUnlocked = false;
+  let chosenVoice = null;
 
   const scoreEl = document.getElementById("score");
   const promptTextEl = document.getElementById("promptText");
   const gridEl = document.getElementById("grid");
-  const resultBox = document.getElementById("resultBox");
-  const resultMsg = document.getElementById("resultMsg");
-  const resultSub = document.getElementById("resultSub");
-  const bunnyWrap = document.getElementById("bunnyWrap");
+  const overlay = document.getElementById("overlay");
+  const popup = document.getElementById("popup");
+  const card = document.getElementById("card");
 
   const startBtn = document.getElementById("startBtn");
   const repeatBtn = document.getElementById("repeatBtn");
   const nextBtn = document.getElementById("nextBtn");
-
-  function pickEnglishVoice() {
-    const voices = window.speechSynthesis?.getVoices?.() || [];
-    if (!voices.length) return null;
-    // 优先选英文女声/美国/英国（尽量通用）
-    const prefer = voices.find(v => /en/i.test(v.lang) && /female|woman|siri/i.test(v.name));
-    if (prefer) return prefer;
-    const enUS = voices.find(v => v.lang === "en-US");
-    if (enUS) return enUS;
-    const en = voices.find(v => /^en/i.test(v.lang));
-    return en || null;
-  }
-
-  function speakEN(text) {
-    if (!("speechSynthesis" in window)) return;
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = "en-US";
-    u.rate = 0.9;   // 慢一点，适合孩子
-    u.pitch = 1.05;
-    const v = pickEnglishVoice();
-    if (v) u.voice = v;
-    window.speechSynthesis.speak(u);
-  }
-
-  function speakCheer() {
-    // 英文鼓励 + 可爱一点
-    speakEN("Good job!");
-  }
 
   function shuffle(arr){
     for (let i = arr.length - 1; i > 0; i--) {
@@ -196,41 +327,83 @@
     }
   }
 
-  function clearConfetti(){
-    [...resultBox.querySelectorAll(".confetti")].forEach(x => x.remove());
+  // ✅ 让英文“更准确”的关键：选高质量 voice
+  function pickBestEnglishVoice() {
+    if (!("speechSynthesis" in window)) return null;
+    const voices = window.speechSynthesis.getVoices() || [];
+    if (!voices.length) return null;
+
+    // 只要英文
+    const en = voices.filter(v => /^en(-|_)?/i.test(v.lang));
+
+    // 优先 iOS 高质量：Siri / Premium / Enhanced
+    const prefer = (arr, re) => arr.find(v => re.test((v.name||"") + " " + (v.voiceURI||"")));
+
+    return (
+      prefer(en, /siri/i) ||
+      prefer(en, /premium|enhanced/i) ||
+      en.find(v => v.lang === "en-US") ||
+      en[0] ||
+      null
+    );
   }
 
-  function popConfetti(){
+  function speakEN(text) {
+    if (!("speechSynthesis" in window)) return;
+    window.speechSynthesis.cancel();
+
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "en-US";
+    u.rate = 0.90;   // 慢一点更清晰
+    u.pitch = 1.00;
+
+    // 选择 voice（第一次会在 voices loaded 后缓存）
+    if (!chosenVoice) chosenVoice = pickBestEnglishVoice();
+    if (chosenVoice) u.voice = chosenVoice;
+
+    window.speechSynthesis.speak(u);
+  }
+
+  function clearConfetti() {
+    [...popup.querySelectorAll(".confetti")].forEach(x => x.remove());
+  }
+
+  function popConfetti() {
     clearConfetti();
     const colors = ["#22c55e","#3b82f6","#f59e0b","#ef4444","#a855f7","#14b8a6"];
-    for (let i=0;i<16;i++){
+    for (let i=0;i<18;i++){
       const s = document.createElement("div");
       s.className = "confetti";
       s.style.background = colors[i % colors.length];
       s.style.left = (50 + (Math.random()*40 - 20)) + "%";
-      s.style.bottom = "10px";
+      s.style.bottom = "8px";
       s.style.setProperty("--x0", (Math.random()*120 - 60).toFixed(1) + "px");
-      s.style.setProperty("--x1", (Math.random()*220 - 110).toFixed(1) + "px");
-      resultBox.appendChild(s);
+      s.style.setProperty("--x1", (Math.random()*240 - 120).toFixed(1) + "px");
+      popup.appendChild(s);
     }
   }
 
-  function setNeutral(){
-    resultBox.classList.remove("shake");
+  function hideOverlay() {
+    overlay.style.display = "none";
     clearConfetti();
-    bunnyWrap.style.display = "none";
-    resultMsg.textContent = "🙂";
-    resultSub.textContent = "听英文，点对应水果图片～";
+  }
+
+  function showGoodOverlay() {
+    popConfetti();
+    overlay.style.display = "flex";
+    // 0.9s 后自动消失，简单直接
+    setTimeout(hideOverlay, 900);
   }
 
   function renderQuestion(){
     locked = false;
-    setNeutral();
+    hideOverlay();
+    card.classList.remove("shake");
 
     current = BANK[Math.floor(Math.random() * BANK.length)];
-    promptTextEl.textContent = `现在读的是：${current.en}（宝宝不用看字，听就行）`;
+    promptTextEl.textContent = current.en; // ✅ 不给宝宝看也没关系，家长看得懂
 
-    // 3个干扰 + 1个正确
+    // 3干扰 + 1正确
     const others = BANK.filter(x => x.en !== current.en);
     shuffle(others);
     const options = [current, ...others.slice(0, 3)];
@@ -239,13 +412,17 @@
     gridEl.innerHTML = "";
     options.forEach(item => {
       const btn = document.createElement("button");
-      btn.className = "pic";
-      btn.innerHTML = `<div class="emoji" aria-label="${item.en}">${item.pic}</div>`;
+      btn.className = "tile";
+      btn.setAttribute("aria-label", item.en);
+
+      // 优先加载真实图片，失败则用 emoji 兜底
+      btn.innerHTML = `
+        <img src="${item.pic}" alt="${item.en}" onerror="this.replaceWith(Object.assign(document.createElement('div'),{style:'font-size:78px;line-height:1;',textContent:'${item.fallback}'}))">
+      `;
       btn.onclick = () => onPick(btn, item);
       gridEl.appendChild(btn);
     });
 
-    // 读英文单词
     if (voiceUnlocked) speakEN(current.en);
   }
 
@@ -253,7 +430,7 @@
     if (locked) return;
     locked = true;
 
-    const buttons = [...document.querySelectorAll(".pic")];
+    const buttons = [...document.querySelectorAll(".tile")];
     buttons.forEach(b => b.disabled = true);
 
     if (item.en === current.en){
@@ -261,37 +438,32 @@
       score += 1;
       scoreEl.textContent = String(score);
 
-      resultMsg.textContent = "🎉";
-      resultSub.textContent = "成功！";
-      popConfetti();
+      // ✅ 成功：直接在上层弹 GOOD + 兔子
+      showGoodOverlay();
 
-      bunnyWrap.style.display = "flex";
-      if (voiceUnlocked) speakCheer();
+      // ✅ 成功语音：只读一个“Good”
+      if (voiceUnlocked) speakEN("Good");
 
-      setTimeout(() => renderQuestion(), 1200);
+      setTimeout(() => renderQuestion(), 950);
     } else {
       btn.classList.add("wrong");
-      resultBox.classList.add("shake");
-
-      // “伤心图片”：先用😢（你要换成真实图片也可以）
-      resultMsg.textContent = "😢";
-      resultSub.textContent = "Try again!";
-      if (voiceUnlocked) speakEN("Try again!");
+      card.classList.add("shake");
+      if (voiceUnlocked) speakEN("Try again");
 
       setTimeout(() => {
-        resultBox.classList.remove("shake");
+        card.classList.remove("shake");
         buttons.forEach(b => { b.disabled = false; b.classList.remove("wrong","correct"); });
         locked = false;
-      }, 900);
+      }, 700);
     }
   }
 
-  // iOS：必须由用户手势触发一次，才能播放语音
+  // iOS：必须用户手势触发一次
   startBtn.addEventListener("click", () => {
     voiceUnlocked = true;
-    // 触发一次 voices 加载（有些iOS需要）
-    window.speechSynthesis.getVoices();
-    speakEN("Let's start!");
+    window.speechSynthesis.getVoices(); // 触发加载
+    chosenVoice = pickBestEnglishVoice();
+    speakEN("Start");
     renderQuestion();
   });
 
@@ -300,12 +472,19 @@
     if (current) speakEN(current.en);
   });
 
-  nextBtn.addEventListener("click", () => renderQuestion());
+  nextBtn.addEventListener("click", () => {
+    renderQuestion();
+  });
 
-  // 某些浏览器 voices 异步加载
+  // voices 异步加载：iOS/Chrome 都可能
   if ("speechSynthesis" in window) {
-    window.speechSynthesis.onvoiceschanged = () => {};
+    window.speechSynthesis.onvoiceschanged = () => {
+      chosenVoice = pickBestEnglishVoice();
+    };
   }
+
+  // 点击遮罩可提前关闭（宝宝点到也没关系）
+  overlay.addEventListener("click", hideOverlay);
 </script>
 </body>
 </html>
